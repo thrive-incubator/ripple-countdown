@@ -176,7 +176,6 @@
       stroke: url(#ringGradient);
       stroke-width: 8;
       stroke-linecap: round;
-      transition: stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1);
     }
 
     .ring-glow {
@@ -186,7 +185,6 @@
       stroke-linecap: round;
       opacity: 0.15;
       filter: blur(8px);
-      transition: stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1);
     }
 
     .hero-ring-text {
@@ -721,15 +719,21 @@
     var ringProgress = document.getElementById('ring-progress');
     var ringGlow = document.getElementById('ring-glow');
 
-    ringProgress.setAttribute('stroke-dasharray', circumference);
-    ringProgress.setAttribute('stroke-dashoffset', circumference);
-    ringGlow.setAttribute('stroke-dasharray', circumference);
-    ringGlow.setAttribute('stroke-dashoffset', circumference);
+    // Start empty (no transition)
+    ringProgress.style.strokeDasharray = circumference;
+    ringProgress.style.strokeDashoffset = circumference;
+    ringGlow.style.strokeDasharray = circumference;
+    ringGlow.style.strokeDashoffset = circumference;
 
-    requestAnimationFrame(function () {
-      ringProgress.style.strokeDashoffset = offset;
-      ringGlow.style.strokeDashoffset = offset;
-    });
+    // Force reflow so browser registers the empty state
+    ringProgress.getBoundingClientRect();
+
+    // Now add transition and animate from 0 up to actual value
+    var easing = 'stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1)';
+    ringProgress.style.transition = easing;
+    ringGlow.style.transition = easing;
+    ringProgress.style.strokeDashoffset = offset;
+    ringGlow.style.strokeDashoffset = offset;
 
     // Hero text
     animateNumber(document.getElementById('hero-lois'), totalLOIs, 1400);
