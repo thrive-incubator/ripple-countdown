@@ -282,6 +282,19 @@
       margin-bottom: 1.2rem;
     }
 
+    .card-badge {
+      font-size: 0.55rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-amber);
+      border: 1px solid rgba(255, 171, 0, 0.25);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
     /* ── Pipeline Card ── */
     .funnel-row {
       display: flex;
@@ -519,7 +532,7 @@
   <div class="metrics-grid">
     <!-- Pipeline Card -->
     <div class="card">
-      <div class="card-title">Pipeline</div>
+      <div class="card-title">Pipeline <span class="card-badge">Coming Soon</span></div>
       <div class="funnel-row">
         <div class="funnel-label">Leads</div>
         <div class="funnel-bar-track">
@@ -751,9 +764,9 @@
     var maxPipeline = Math.max(pipeline.leads, 1);
 
     setTimeout(function () {
-      setBar('bar-leads', pipeline.leads, maxPipeline, 'num-leads', pipeline.leads);
-      setBar('bar-qualified', pipeline.qualified, maxPipeline, 'num-qualified', pipeline.qualified);
-      setBar('bar-inconvo', pipeline.inConversation, maxPipeline, 'num-inconvo', pipeline.inConversation);
+      setBar('bar-leads', pipeline.leads, maxPipeline, 'num-leads', 'N/A');
+      setBar('bar-qualified', pipeline.qualified, maxPipeline, 'num-qualified', 'N/A');
+      setBar('bar-inconvo', pipeline.inConversation, maxPipeline, 'num-inconvo', 'N/A');
     }, 600);
 
     // Revenue
