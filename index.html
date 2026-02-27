@@ -239,6 +239,40 @@
       display: inline-block;
     }
 
+    .target-toggle {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 0.6rem;
+    }
+
+    .toggle-btn {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      padding: 0.35rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .toggle-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
     .pace-dot.green  { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 230, 118, 0.4); }
     .pace-dot.amber  { background: var(--accent-amber); box-shadow: 0 0 8px rgba(255, 171, 0, 0.4); }
     .pace-dot.red    { background: var(--accent-red);   box-shadow: 0 0 8px rgba(255, 82, 82, 0.4); }
@@ -524,6 +558,10 @@
         <div class="hero-target">of <strong id="hero-target-num">--</strong></div>
       </div>
     </div>
+    <div class="target-toggle" id="target-toggle">
+      <button class="toggle-btn active" data-target="march">March · 100</button>
+      <button class="toggle-btn" data-target="june">June · 250</button>
+    </div>
     <div class="hero-label" id="hero-target-label">LOIs Signed</div>
     <div class="hero-pace" id="hero-pace"></div>
   </section>
@@ -639,22 +677,26 @@
 
   // ── Active Target ──
 
-  function getActiveTarget(data) {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const marchDate = new Date(data.milestones.marchDeadline + 'T00:00:00');
-    if (now <= marchDate) {
-      return {
-        label: 'March Target',
-        count: data.targets.marchLOIs,
-        date: data.milestones.marchDeadline
-      };
+  var selectedTarget = null; // 'march' or 'june', null = auto
+
+  function getTarget(data, which) {
+    if (which === 'march') {
+      return { label: 'March Target', count: data.targets.marchLOIs, date: data.milestones.marchDeadline };
     }
-    return {
-      label: 'June Launch',
-      count: data.targets.juneLOIs,
-      date: data.milestones.juneLaunch
-    };
+    if (which === 'june') {
+      return { label: 'June Launch', count: data.targets.juneLOIs, date: data.milestones.juneLaunch };
+    }
+    // Auto: march if before deadline, else june
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    var marchDate = new Date(data.milestones.marchDeadline + 'T00:00:00');
+    return now <= marchDate
+      ? getTarget(data, 'march')
+      : getTarget(data, 'june');
+  }
+
+  function getActiveTarget(data) {
+    return getTarget(data, selectedTarget);
   }
 
   // ── Pace ──
@@ -686,13 +728,79 @@
     return 'red';
   }
 
-  // ── Render ──
+  // ── Render target-dependent sections (ring, pace, label) ──
 
-  function render(data) {
+  function renderTarget(data, animate) {
     var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
     var active = getActiveTarget(data);
     var pace = calcPace(data);
     var color = paceColor(pace.ratio);
+
+    // Hero ring
+    var pct = Math.min(totalLOIs / active.count, 1);
+    var radius = 124;
+    var circumference = 2 * Math.PI * radius;
+    var offset = circumference * (1 - pct);
+
+    var ringProgress = document.getElementById('ring-progress');
+    var ringGlow = document.getElementById('ring-glow');
+
+    // Reset to empty without transition
+    ringProgress.style.transition = 'none';
+    ringGlow.style.transition = 'none';
+    ringProgress.style.strokeDasharray = circumference;
+    ringProgress.style.strokeDashoffset = circumference;
+    ringGlow.style.strokeDasharray = circumference;
+    ringGlow.style.strokeDashoffset = circumference;
+
+    // Force reflow
+    ringProgress.getBoundingClientRect();
+
+    // Animate from 0 up to actual value
+    var easing = 'stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1)';
+    ringProgress.style.transition = animate ? easing : 'none';
+    ringGlow.style.transition = animate ? easing : 'none';
+    ringProgress.style.strokeDashoffset = offset;
+    ringGlow.style.strokeDashoffset = offset;
+
+    // Hero text
+    if (animate) {
+      animateNumber(document.getElementById('hero-lois'), totalLOIs, 1400);
+    } else {
+      document.getElementById('hero-lois').textContent = totalLOIs;
+    }
+    document.getElementById('hero-target-num').textContent = active.count;
+    document.getElementById('hero-target-label').textContent = 'Letters Of Intent Signed — ' + active.label;
+
+    // Hero pace line
+    var heroP = document.getElementById('hero-pace');
+    heroP.innerHTML =
+      '<span class="pace-dot ' + color + '"></span>' +
+      '<span>Signing ' + pace.current + '/wk — need ' + pace.required + '/wk</span>';
+
+    // Pace card
+    var pcEl = document.getElementById('pace-current');
+    pcEl.textContent = pace.current + ' LOIs/wk';
+    pcEl.className = 'pace-row-value ' + color;
+
+    document.getElementById('pace-required').textContent = pace.required + ' LOIs/wk';
+    document.getElementById('pace-remaining').textContent =
+      pace.remaining + ' LOIs in ' + pace.weeksLeft + ' wks';
+
+    // Update toggle active state
+    var btns = document.querySelectorAll('.toggle-btn');
+    var activeKey = selectedTarget || (active.label.indexOf('March') >= 0 ? 'march' : 'june');
+    btns.forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-target') === activeKey);
+    });
+  }
+
+  // ── Render (full, called once on load) ──
+
+  var loadedData = null;
+
+  function render(data) {
+    loadedData = data;
 
     // Countdowns
     var marchDays = daysUntil(data.milestones.marchDeadline);
@@ -718,46 +826,12 @@
       juneEl.classList.add('urgent');
     }
 
-    // Determine which countdown is nearer and apply urgency
     if (marchDays > 0 && juneDays > 0 && marchDays <= juneDays && marchDays <= 30) {
       marchEl.classList.add('urgent');
     }
 
-    // Hero ring
-    var pct = Math.min(totalLOIs / active.count, 1);
-    var radius = 124;
-    var circumference = 2 * Math.PI * radius;
-    var offset = circumference * (1 - pct);
-
-    var ringProgress = document.getElementById('ring-progress');
-    var ringGlow = document.getElementById('ring-glow');
-
-    // Start empty (no transition)
-    ringProgress.style.strokeDasharray = circumference;
-    ringProgress.style.strokeDashoffset = circumference;
-    ringGlow.style.strokeDasharray = circumference;
-    ringGlow.style.strokeDashoffset = circumference;
-
-    // Force reflow so browser registers the empty state
-    ringProgress.getBoundingClientRect();
-
-    // Now add transition and animate from 0 up to actual value
-    var easing = 'stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1)';
-    ringProgress.style.transition = easing;
-    ringGlow.style.transition = easing;
-    ringProgress.style.strokeDashoffset = offset;
-    ringGlow.style.strokeDashoffset = offset;
-
-    // Hero text
-    animateNumber(document.getElementById('hero-lois'), totalLOIs, 1400);
-    document.getElementById('hero-target-num').textContent = active.count;
-    document.getElementById('hero-target-label').textContent = 'Letters Of Intent Signed — ' + active.label;
-
-    // Hero pace line
-    var heroP = document.getElementById('hero-pace');
-    heroP.innerHTML =
-      '<span class="pace-dot ' + color + '"></span>' +
-      '<span>Signing ' + pace.current + '/wk — need ' + pace.required + '/wk</span>';
+    // Target-dependent sections (ring, pace, label)
+    renderTarget(data, true);
 
     // Pipeline
     var pipeline = data.actuals.pipeline;
@@ -790,20 +864,17 @@
     // Sparkline
     renderSparkline(data.actuals.weeklyLOIsHistory);
 
-    // Pace stats
-    var pcEl = document.getElementById('pace-current');
-    pcEl.textContent = pace.current + ' LOIs/wk';
-    pcEl.className = 'pace-row-value ' + color;
-
-    var prEl = document.getElementById('pace-required');
-    prEl.textContent = pace.required + ' LOIs/wk';
-
-    document.getElementById('pace-remaining').textContent =
-      pace.remaining + ' LOIs in ' + pace.weeksLeft + ' wks';
-
     // Footer
     document.getElementById('footer').textContent =
       'Last updated: ' + data.lastUpdated;
+
+    // Toggle listener
+    document.getElementById('target-toggle').addEventListener('click', function (e) {
+      var btn = e.target.closest('.toggle-btn');
+      if (!btn || !loadedData) return;
+      selectedTarget = btn.getAttribute('data-target');
+      renderTarget(loadedData, true);
+    });
   }
 
   function setBar(barId, value, max, numId, display) {
