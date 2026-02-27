@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ripple Institute — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #07080f;
+      --bg-card: rgba(255, 255, 255, 0.035);
+      --border-card: rgba(255, 255, 255, 0.07);
+      --text-primary: #eef0f6;
+      --text-secondary: #7b7f9e;
+      --text-muted: #4e5170;
+      --accent-blue: #4a9eff;
+      --accent-cyan: #22d3ee;
+      --accent-green: #00e676;
+      --accent-amber: #ffab00;
+      --accent-red: #ff5252;
+      --ring-track: rgba(255, 255, 255, 0.06);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Animated Background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(74, 158, 255, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(0, 230, 118, 0.04) 0%, transparent 70%);
+      animation: bgShift 20s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes bgShift {
+      0%   { opacity: 1; transform: scale(1); }
+      50%  { opacity: 0.7; transform: scale(1.1) translate(2%, -2%); }
+      100% { opacity: 1; transform: scale(1) translate(-1%, 1%); }
+    }
+
+    /* ── Layout Container ── */
+    .dashboard {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .header-brand {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .header-brand span {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .countdown-row {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .countdown-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .countdown-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .countdown-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .countdown-block.urgent .countdown-number {
+      color: var(--accent-amber);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .countdown-block.passed .countdown-number {
+      color: var(--accent-red);
+    }
+
+    .countdown-divider {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--border-card), transparent);
+      align-self: center;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 171, 0, 0); }
+      50%      { opacity: 0.85; text-shadow: 0 0 30px rgba(255, 171, 0, 0.3); }
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      animation: fadeIn 1s ease-out 0.2s both;
+    }
+
+    .hero-ring-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-ring {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: var(--ring-track);
+      stroke-width: 8;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: url(#ringGradient);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1);
+    }
+
+    .ring-glow {
+      fill: none;
+      stroke: url(#ringGradient);
+      stroke-width: 16;
+      stroke-linecap: round;
+      opacity: 0.15;
+      filter: blur(8px);
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1);
+    }
+
+    .hero-ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-number {
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-target {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .hero-target strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .hero-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+    }
+
+    .hero-pace {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pace-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .pace-dot.green  { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 230, 118, 0.4); }
+    .pace-dot.amber  { background: var(--accent-amber); box-shadow: 0 0 8px rgba(255, 171, 0, 0.4); }
+    .pace-dot.red    { background: var(--accent-red);   box-shadow: 0 0 8px rgba(255, 82, 82, 0.4); }
+
+    /* ── Metrics Grid ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: cardIn 0.7s ease-out forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.4s; }
+    .card:nth-child(2) { animation-delay: 0.55s; }
+    .card:nth-child(3) { animation-delay: 0.7s; }
+
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Pipeline Card ── */
+    .funnel-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .funnel-row:last-child { margin-bottom: 0; }
+
+    .funnel-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      width: 100px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .funnel-bar-track {
+      flex: 1;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .funnel-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.15, 1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+
+    .funnel-bar-fill span {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(74, 158, 255, 0.4), rgba(74, 158, 255, 0.7)); }
+    .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.7)); }
+    .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 230, 118, 0.4), rgba(0, 230, 118, 0.7)); }
+
+    /* ── Revenue Card ── */
+    .revenue-big {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .revenue-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.2rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+      width: 0%;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.15, 1);
+    }
+
+    .revenue-breakdown {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Pace Card ── */
+    .sparkline-container {
+      margin-bottom: 1rem;
+      height: 64px;
+    }
+
+    .sparkline {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sparkline polyline {
+      fill: none;
+      stroke: var(--accent-blue);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sparkline .area {
+      fill: url(#sparkGradient);
+      stroke: none;
+    }
+
+    .pace-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .pace-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .pace-row-label {
+      color: var(--text-secondary);
+    }
+
+    .pace-row-value {
+      font-weight: 600;
+    }
+
+    .pace-row-value.green  { color: var(--accent-green); }
+    .pace-row-value.amber  { color: var(--accent-amber); }
+    .pace-row-value.red    { color: var(--accent-red); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding-top: 2rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      animation: fadeIn 0.8s ease-out 1s both;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .dashboard { padding: 1.5rem; }
+      .hero-ring-container { width: 240px; height: 240px; }
+      .hero-number { font-size: 3.2rem; }
+      .metrics-grid { gap: 1rem; }
+      .card { padding: 1.4rem; }
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+      .countdown-row { gap: 1.5rem; }
+      .countdown-number { font-size: 2.8rem; }
+      .countdown-divider { width: 40px; height: 1px; background: linear-gradient(to right, transparent, var(--border-card), transparent); }
+      .hero-ring-container { width: 220px; height: 220px; }
+      .hero-number { font-size: 2.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard { padding: 1rem; }
+      .countdown-number { font-size: 2.2rem; }
+      .hero-ring-container { width: 190px; height: 190px; }
+      .hero-number { font-size: 2.4rem; }
+      .revenue-big { font-size: 1.8rem; }
+    }
+
+    /* ── Error State ── */
+    .error {
+      text-align: center;
+      color: var(--accent-red);
+      padding: 4rem 2rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard" id="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-brand"><span>Ripple Institute</span></div>
+    <div class="countdown-row">
+      <div class="countdown-block" id="countdown-march">
+        <div class="countdown-number" id="march-days">--</div>
+        <div class="countdown-label">Days to March Deadline</div>
+      </div>
+      <div class="countdown-divider"></div>
+      <div class="countdown-block" id="countdown-june">
+        <div class="countdown-number" id="june-days">--</div>
+        <div class="countdown-label">Days to June Launch</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero: LOIs Signed -->
+  <section class="hero">
+    <div class="hero-ring-container">
+      <svg viewBox="0 0 280 280" class="hero-ring">
+        <defs>
+          <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4a9eff" />
+            <stop offset="100%" stop-color="#00e676" />
+          </linearGradient>
+        </defs>
+        <circle cx="140" cy="140" r="124" class="ring-track" />
+        <circle cx="140" cy="140" r="124" class="ring-glow" id="ring-glow"
+                stroke-dasharray="0" stroke-dashoffset="0" />
+        <circle cx="140" cy="140" r="124" class="ring-progress" id="ring-progress"
+                stroke-dasharray="0" stroke-dashoffset="0" />
+      </svg>
+      <div class="hero-ring-text">
+        <div class="hero-number" id="hero-lois">0</div>
+        <div class="hero-target">of <strong id="hero-target-num">--</strong></div>
+      </div>
+    </div>
+    <div class="hero-label" id="hero-target-label">LOIs Signed</div>
+    <div class="hero-pace" id="hero-pace"></div>
+  </section>
+
+  <!-- Metrics Grid -->
+  <div class="metrics-grid">
+    <!-- Pipeline Card -->
+    <div class="card">
+      <div class="card-title">Pipeline</div>
+      <div class="funnel-row">
+        <div class="funnel-label">Leads</div>
+        <div class="funnel-bar-track">
+          <div class="funnel-bar-fill" id="bar-leads"><span id="num-leads">0</span></div>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-label">Qualified</div>
+        <div class="funnel-bar-track">
+          <div class="funnel-bar-fill" id="bar-qualified"><span id="num-qualified">0</span></div>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-label">In Conversation</div>
+        <div class="funnel-bar-track">
+          <div class="funnel-bar-fill" id="bar-inconvo"><span id="num-inconvo">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Card -->
+    <div class="card">
+      <div class="card-title">Revenue Committed</div>
+      <div class="revenue-big" id="revenue-total">$0</div>
+      <div class="revenue-sub" id="revenue-pct">0% of Y1 target</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="revenue-bar"></div>
+      </div>
+      <div class="revenue-breakdown" id="revenue-breakdown"></div>
+    </div>
+
+    <!-- Pace Card -->
+    <div class="card">
+      <div class="card-title">Weekly Pace</div>
+      <div class="sparkline-container" id="sparkline-container"></div>
+      <div class="pace-stats">
+        <div class="pace-row">
+          <span class="pace-row-label">Current pace</span>
+          <span class="pace-row-value" id="pace-current">--</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-row-label">Required pace</span>
+          <span class="pace-row-value" id="pace-required">--</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-row-label">Remaining</span>
+          <span class="pace-row-value" id="pace-remaining">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer"></footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Utilities ──
+
+  function daysUntil(dateStr) {
+    const target = new Date(dateStr + 'T00:00:00');
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  }
+
+  function weeksUntil(dateStr) {
+    return daysUntil(dateStr) / 7;
+  }
+
+  function formatCurrency(n) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency', currency: 'USD', maximumFractionDigits: 0
+    }).format(n);
+  }
+
+  function animateNumber(el, target, duration, prefix, suffix) {
+    prefix = prefix || '';
+    suffix = suffix || '';
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(target * eased);
+      el.textContent = prefix + current.toLocaleString() + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function animateCurrency(el, target, duration) {
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = formatCurrency(Math.round(target * eased));
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ── Active Target ──
+
+  function getActiveTarget(data) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const marchDate = new Date(data.milestones.marchDeadline + 'T00:00:00');
+    if (now <= marchDate) {
+      return {
+        label: 'March Target',
+        count: data.targets.marchLOIs,
+        date: data.milestones.marchDeadline
+      };
+    }
+    return {
+      label: 'June Launch',
+      count: data.targets.juneLOIs,
+      date: data.milestones.juneLaunch
+    };
+  }
+
+  // ── Pace ──
+
+  function calcPace(data) {
+    var history = data.actuals.weeklyLOIsHistory;
+    var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
+    var active = getActiveTarget(data);
+    var remaining = Math.max(active.count - totalLOIs, 0);
+    var wLeft = weeksUntil(active.date);
+
+    var recent = history.slice(-3);
+    var currentPace = recent.reduce(function (s, w) { return s + w.count; }, 0) / (recent.length || 1);
+    var requiredPace = wLeft > 0 ? remaining / wLeft : 0;
+    var ratio = requiredPace > 0 ? currentPace / requiredPace : 2;
+
+    return {
+      current: Math.round(currentPace * 10) / 10,
+      required: Math.round(requiredPace * 10) / 10,
+      ratio: ratio,
+      remaining: remaining,
+      weeksLeft: Math.max(Math.round(wLeft * 10) / 10, 0)
+    };
+  }
+
+  function paceColor(ratio) {
+    if (ratio >= 1) return 'green';
+    if (ratio >= 0.8) return 'amber';
+    return 'red';
+  }
+
+  // ── Render ──
+
+  function render(data) {
+    var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
+    var active = getActiveTarget(data);
+    var pace = calcPace(data);
+    var color = paceColor(pace.ratio);
+
+    // Countdowns
+    var marchDays = daysUntil(data.milestones.marchDeadline);
+    var juneDays = daysUntil(data.milestones.juneLaunch);
+
+    var marchEl = document.getElementById('countdown-march');
+    var juneEl = document.getElementById('countdown-june');
+
+    document.getElementById('march-days').textContent = Math.abs(marchDays);
+    document.getElementById('june-days').textContent = Math.abs(juneDays);
+
+    if (marchDays < 0) {
+      marchEl.classList.add('passed');
+      marchEl.querySelector('.countdown-label').textContent = 'Days Past March Deadline';
+    } else if (marchDays <= 14) {
+      marchEl.classList.add('urgent');
+    }
+
+    if (juneDays < 0) {
+      juneEl.classList.add('passed');
+      juneEl.querySelector('.countdown-label').textContent = 'Days Past June Launch';
+    } else if (juneDays <= 30 && marchDays > 14) {
+      juneEl.classList.add('urgent');
+    }
+
+    // Determine which countdown is nearer and apply urgency
+    if (marchDays > 0 && juneDays > 0 && marchDays <= juneDays && marchDays <= 30) {
+      marchEl.classList.add('urgent');
+    }
+
+    // Hero ring
+    var pct = Math.min(totalLOIs / active.count, 1);
+    var radius = 124;
+    var circumference = 2 * Math.PI * radius;
+    var offset = circumference * (1 - pct);
+
+    var ringProgress = document.getElementById('ring-progress');
+    var ringGlow = document.getElementById('ring-glow');
+
+    ringProgress.setAttribute('stroke-dasharray', circumference);
+    ringProgress.setAttribute('stroke-dashoffset', circumference);
+    ringGlow.setAttribute('stroke-dasharray', circumference);
+    ringGlow.setAttribute('stroke-dashoffset', circumference);
+
+    requestAnimationFrame(function () {
+      ringProgress.style.strokeDashoffset = offset;
+      ringGlow.style.strokeDashoffset = offset;
+    });
+
+    // Hero text
+    animateNumber(document.getElementById('hero-lois'), totalLOIs, 1400);
+    document.getElementById('hero-target-num').textContent = active.count;
+    document.getElementById('hero-target-label').textContent = 'LOIs Signed — ' + active.label;
+
+    // Hero pace line
+    var heroP = document.getElementById('hero-pace');
+    heroP.innerHTML =
+      '<span class="pace-dot ' + color + '"></span>' +
+      '<span>Signing ' + pace.current + '/wk — need ' + pace.required + '/wk</span>';
+
+    // Pipeline
+    var pipeline = data.actuals.pipeline;
+    var maxPipeline = Math.max(pipeline.leads, 1);
+
+    setTimeout(function () {
+      setBar('bar-leads', pipeline.leads, maxPipeline, 'num-leads', pipeline.leads);
+      setBar('bar-qualified', pipeline.qualified, maxPipeline, 'num-qualified', pipeline.qualified);
+      setBar('bar-inconvo', pipeline.inConversation, maxPipeline, 'num-inconvo', pipeline.inConversation);
+    }, 600);
+
+    // Revenue
+    var b2cRev = data.actuals.lois.b2c * data.pricing.b2c;
+    var b2bRev = data.actuals.lois.b2b * data.pricing.b2b;
+    var totalRev = b2cRev + b2bRev;
+    var revPct = (totalRev / data.targets.y1Revenue) * 100;
+
+    animateCurrency(document.getElementById('revenue-total'), totalRev, 1400);
+    document.getElementById('revenue-pct').textContent =
+      revPct.toFixed(1) + '% of Y1 target (' + formatCurrency(data.targets.y1Revenue) + ')';
+
+    setTimeout(function () {
+      document.getElementById('revenue-bar').style.width = Math.min(revPct, 100) + '%';
+    }, 700);
+
+    document.getElementById('revenue-breakdown').innerHTML =
+      data.actuals.lois.b2c + ' B2C (' + formatCurrency(b2cRev) + ') + ' +
+      data.actuals.lois.b2b + ' B2B (' + formatCurrency(b2bRev) + ')';
+
+    // Sparkline
+    renderSparkline(data.actuals.weeklyLOIsHistory);
+
+    // Pace stats
+    var pcEl = document.getElementById('pace-current');
+    pcEl.textContent = pace.current + ' LOIs/wk';
+    pcEl.className = 'pace-row-value ' + color;
+
+    var prEl = document.getElementById('pace-required');
+    prEl.textContent = pace.required + ' LOIs/wk';
+
+    document.getElementById('pace-remaining').textContent =
+      pace.remaining + ' LOIs in ' + pace.weeksLeft + ' wks';
+
+    // Footer
+    document.getElementById('footer').textContent =
+      'Last updated: ' + data.lastUpdated;
+  }
+
+  function setBar(barId, value, max, numId, display) {
+    var pct = Math.round((value / max) * 100);
+    document.getElementById(barId).style.width = pct + '%';
+    document.getElementById(numId).textContent = display;
+  }
+
+  function renderSparkline(history) {
+    var values = history.map(function (w) { return w.count; });
+    if (values.length < 2) return;
+
+    var max = Math.max.apply(null, values);
+    var min = Math.min.apply(null, values);
+    var range = max - min || 1;
+    var w = 200, h = 60;
+    var padY = 4;
+    var step = w / (values.length - 1);
+
+    var points = values.map(function (v, i) {
+      var x = i * step;
+      var y = padY + (1 - (v - min) / range) * (h - 2 * padY);
+      return x + ',' + y;
+    });
+
+    var areaPoints = points.join(' ') + ' ' + w + ',' + h + ' 0,' + h;
+
+    document.getElementById('sparkline-container').innerHTML =
+      '<svg viewBox="0 0 ' + w + ' ' + h + '" class="sparkline" preserveAspectRatio="none">' +
+      '<defs><linearGradient id="sparkGradient" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="rgba(74,158,255,0.25)" />' +
+      '<stop offset="100%" stop-color="rgba(74,158,255,0)" />' +
+      '</linearGradient></defs>' +
+      '<polygon points="' + areaPoints + '" class="area" />' +
+      '<polyline points="' + points.join(' ') + '" />' +
+      '</svg>';
+  }
+
+  // ── Configuration ──
+  // To use Google Sheets: publish sheet as CSV, then paste the URL here.
+  // Example: 'https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv'
+  var DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQC9zN4sy8wftBf0K30KA5cPU1a3rKLG79ZbPjZuDh11g0tjhwKCGK3imcAHq9DUXklzaxfBSqbqm7-/pub?output=csv';
+
+  // ── CSV Parser ──
+
+  function parseCSV(text) {
+    var lines = text.split(/\r?\n/).map(function (l) { return l.trim(); });
+    var kv = {};
+    var weekly = [];
+    var inWeekly = false;
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (!line) continue;                       // skip blank lines
+      if (line === 'key,value') continue;        // skip header
+
+      if (line.toLowerCase().startsWith('weekof')) {
+        inWeekly = true;
+        continue;                                // skip "weekOf,count" header
+      }
+
+      var parts = line.split(',');
+      if (parts.length < 2) continue;
+
+      if (inWeekly) {
+        weekly.push({ weekOf: parts[0].trim(), count: parseInt(parts[1], 10) });
+      } else {
+        kv[parts[0].trim()] = parts[1].trim();
+      }
+    }
+
+    return {
+      lastUpdated: kv.lastUpdated || '',
+      milestones: {
+        marchDeadline: kv.marchDeadline || '',
+        juneLaunch: kv.juneLaunch || ''
+      },
+      targets: {
+        marchLOIs: parseInt(kv.marchLOIs, 10) || 0,
+        juneLOIs: parseInt(kv.juneLOIs, 10) || 0,
+        y1Revenue: parseInt(kv.y1Revenue, 10) || 0
+      },
+      pricing: {
+        b2c: parseInt(kv.b2cPrice, 10) || 0,
+        b2b: parseInt(kv.b2bPrice, 10) || 0
+      },
+      actuals: {
+        lois: {
+          b2c: parseInt(kv.lois_b2c, 10) || 0,
+          b2b: parseInt(kv.lois_b2b, 10) || 0
+        },
+        pipeline: {
+          leads: parseInt(kv.pipeline_leads, 10) || 0,
+          qualified: parseInt(kv.pipeline_qualified, 10) || 0,
+          inConversation: parseInt(kv.pipeline_inConversation, 10) || 0
+        },
+        weeklyLOIsHistory: weekly
+      }
+    };
+  }
+
+  // ── Load ──
+
+  async function loadData() {
+    try {
+      var resp = await fetch(DATA_URL + (DATA_URL.includes('?') ? '&' : '?') + 't=' + Date.now());
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var text = await resp.text();
+      var data = parseCSV(text);
+      render(data);
+    } catch (err) {
+      document.getElementById('app').innerHTML =
+        '<p class="error">Could not load dashboard data.<br>Check that data.csv exists and the page is served via HTTP.</p>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadData);
+})();
+</script>
+
+</body>
+</html>
