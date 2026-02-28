@@ -25,7 +25,53 @@
       --accent-red: #ff5252;
       --ring-track: rgba(255, 255, 255, 0.06);
       --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ring-from: #4a9eff;
+      --ring-to: #00e676;
+      --bar-text: rgba(255, 255, 255, 0.9);
+      --progress-bg: rgba(255, 255, 255, 0.04);
+      --funnel-bg: rgba(255, 255, 255, 0.03);
     }
+
+    /* ── Thrive Theme Overrides ── */
+    body.thrive {
+      --bg-primary: #faf8f5;
+      --bg-card: rgba(0, 51, 102, 0.04);
+      --border-card: rgba(0, 51, 102, 0.10);
+      --text-primary: #1a2a3a;
+      --text-secondary: #5a6a7a;
+      --text-muted: #8a95a5;
+      --accent-blue: #003366;
+      --accent-cyan: #0d7ea0;
+      --accent-green: #2e8b57;
+      --accent-amber: #d4890a;
+      --accent-red: #c0392b;
+      --ring-track: rgba(0, 51, 102, 0.08);
+      --ring-from: #003366;
+      --ring-to: #0d7ea0;
+      --bar-text: rgba(255, 255, 255, 0.95);
+      --progress-bg: rgba(0, 51, 102, 0.06);
+      --funnel-bg: rgba(0, 51, 102, 0.04);
+    }
+
+    body.thrive::before {
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(0, 51, 102, 0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(13, 126, 160, 0.04) 0%, transparent 70%);
+    }
+
+    body.thrive .toggle-btn.active {
+      background: rgba(0, 51, 102, 0.10);
+    }
+
+    body.thrive .target-toggle {
+      background: rgba(0, 51, 102, 0.04);
+    }
+
+    /* View switching: hide cards not for the current view */
+    .view-business { display: flex; }
+    .view-thrive   { display: none; }
+    body.thrive .view-business { display: none; }
+    body.thrive .view-thrive   { display: flex; }
 
     html { font-size: 16px; }
 
@@ -232,6 +278,13 @@
       gap: 0.4rem;
     }
 
+    .hero-impact {
+      font-size: 0.85rem;
+      color: var(--accent-green);
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
     .pace-dot {
       width: 8px;
       height: 8px;
@@ -292,16 +345,15 @@
       border: 1px solid var(--border-card);
       border-radius: 20px;
       padding: 1.8rem;
-      display: flex;
       flex-direction: column;
       opacity: 0;
       transform: translateY(16px);
       animation: cardIn 0.7s ease-out forwards;
     }
 
-    .card:nth-child(1) { animation-delay: 0.4s; }
-    .card:nth-child(2) { animation-delay: 0.55s; }
-    .card:nth-child(3) { animation-delay: 0.7s; }
+    .card:nth-child(1), .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(2), .card:nth-child(5) { animation-delay: 0.55s; }
+    .card:nth-child(3), .card:nth-child(6) { animation-delay: 0.7s; }
 
     @keyframes cardIn {
       to { opacity: 1; transform: translateY(0); }
@@ -350,7 +402,7 @@
     .funnel-bar-track {
       flex: 1;
       height: 26px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--funnel-bg);
       border-radius: 6px;
       overflow: hidden;
       position: relative;
@@ -370,12 +422,16 @@
     .funnel-bar-fill span {
       font-size: 0.7rem;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--bar-text);
     }
 
     .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(74, 158, 255, 0.4), rgba(74, 158, 255, 0.7)); }
     .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.7)); }
     .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 230, 118, 0.4), rgba(0, 230, 118, 0.7)); }
+
+    body.thrive .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 51, 102, 0.3), rgba(0, 51, 102, 0.6)); }
+    body.thrive .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(13, 126, 160, 0.3), rgba(13, 126, 160, 0.6)); }
+    body.thrive .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(46, 139, 87, 0.3), rgba(46, 139, 87, 0.6)); }
 
     /* ── Revenue Card ── */
     .revenue-big {
@@ -394,7 +450,7 @@
     .progress-track {
       width: 100%;
       height: 8px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--progress-bg);
       border-radius: 4px;
       overflow: hidden;
       margin-bottom: 0.8rem;
@@ -412,6 +468,34 @@
       font-size: 0.72rem;
       color: var(--text-muted);
       line-height: 1.6;
+    }
+
+    /* ── Georgetown Return Card (Thrive) ── */
+    .gu-return-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .gu-return-item:last-child { border-bottom: none; }
+
+    .gu-return-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .gu-return-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .gu-return-note {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
     }
 
     /* ── Pace Card ── */
@@ -462,6 +546,13 @@
     .pace-row-value.green  { color: var(--accent-green); }
     .pace-row-value.amber  { color: var(--accent-amber); }
     .pace-row-value.red    { color: var(--accent-red); }
+
+    .pace-note {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      font-style: italic;
+    }
 
     /* ── Footer ── */
     .footer {
@@ -523,28 +614,28 @@
 <div class="dashboard" id="app">
   <!-- Header -->
   <header class="header">
-    <div class="header-brand"><span>Ripple Institute</span></div>
+    <div class="header-brand" id="header-brand"><span>Ripple Institute</span></div>
     <div class="countdown-row">
       <div class="countdown-block" id="countdown-march">
         <div class="countdown-number" id="march-days">--</div>
-        <div class="countdown-label">Days to March Deadline</div>
+        <div class="countdown-label" id="march-label">Days to March Deadline</div>
       </div>
       <div class="countdown-divider"></div>
       <div class="countdown-block" id="countdown-june">
         <div class="countdown-number" id="june-days">--</div>
-        <div class="countdown-label">Days to June Launch</div>
+        <div class="countdown-label" id="june-label">Days to June Launch</div>
       </div>
     </div>
   </header>
 
-  <!-- Hero: LOIs Signed -->
+  <!-- Hero -->
   <section class="hero">
     <div class="hero-ring-container">
       <svg viewBox="0 0 280 280" class="hero-ring">
         <defs>
           <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#4a9eff" />
-            <stop offset="100%" stop-color="#00e676" />
+            <stop offset="0%" stop-color="var(--ring-from)" />
+            <stop offset="100%" stop-color="var(--ring-to)" />
           </linearGradient>
         </defs>
         <circle cx="140" cy="140" r="124" class="ring-track" />
@@ -564,12 +655,13 @@
     </div>
     <div class="hero-label" id="hero-target-label">LOIs Signed</div>
     <div class="hero-pace" id="hero-pace"></div>
+    <div class="hero-impact" id="hero-impact" style="display:none;"></div>
   </section>
 
   <!-- Metrics Grid -->
   <div class="metrics-grid">
-    <!-- Pipeline Card -->
-    <div class="card">
+    <!-- BUSINESS: Pipeline Card -->
+    <div class="card view-business">
       <div class="card-title">Pipeline <span class="card-badge">Coming Soon</span></div>
       <div class="funnel-row">
         <div class="funnel-label">Leads</div>
@@ -591,8 +683,8 @@
       </div>
     </div>
 
-    <!-- Revenue Card -->
-    <div class="card">
+    <!-- BUSINESS: Revenue Card -->
+    <div class="card view-business">
       <div class="card-title">Revenue Committed</div>
       <div class="revenue-big" id="revenue-total">$0</div>
       <div class="revenue-sub" id="revenue-pct">0% of Y1 target</div>
@@ -602,17 +694,17 @@
       <div class="revenue-breakdown" id="revenue-breakdown"></div>
     </div>
 
-    <!-- Pace Card -->
-    <div class="card">
+    <!-- BUSINESS: Pace Card -->
+    <div class="card view-business">
       <div class="card-title">Weekly Pace</div>
       <div class="sparkline-container" id="sparkline-container"></div>
       <div class="pace-stats">
         <div class="pace-row">
-          <span class="pace-row-label">Current pace</span>
+          <span class="pace-row-label" id="pace-current-label">Current pace</span>
           <span class="pace-row-value" id="pace-current">--</span>
         </div>
         <div class="pace-row">
-          <span class="pace-row-label">Required pace</span>
+          <span class="pace-row-label" id="pace-required-label">Required pace</span>
           <span class="pace-row-value" id="pace-required">--</span>
         </div>
         <div class="pace-row">
@@ -620,6 +712,64 @@
           <span class="pace-row-value" id="pace-remaining">--</span>
         </div>
       </div>
+    </div>
+
+    <!-- THRIVE: Georgetown Financial Return -->
+    <div class="card view-thrive">
+      <div class="card-title">Georgetown Financial Return</div>
+      <div class="gu-return-item">
+        <div>
+          <div class="gu-return-label">Instructor Compensation</div>
+          <div class="gu-return-note">2 Georgetown faculty as lead instructors</div>
+        </div>
+        <div class="gu-return-value" id="gu-instructor">$0</div>
+      </div>
+      <div class="gu-return-item">
+        <div>
+          <div class="gu-return-label">Equity Stake</div>
+          <div class="gu-return-note" id="gu-equity-note">at spin-off</div>
+        </div>
+        <div class="gu-return-value" id="gu-equity">0%</div>
+      </div>
+      <div class="gu-return-item">
+        <div>
+          <div class="gu-return-label">Revenue Sharing</div>
+          <div class="gu-return-note" id="gu-revshare-note">once annual revenue exceeds threshold</div>
+        </div>
+        <div class="gu-return-value" id="gu-revshare">0%</div>
+      </div>
+    </div>
+
+    <!-- THRIVE: Instructor Funding -->
+    <div class="card view-thrive">
+      <div class="card-title">Instructor Funding</div>
+      <div class="revenue-big" id="thrive-instructor-total">$0</div>
+      <div class="revenue-sub" id="thrive-instructor-sub">Georgetown instructor contracts</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="thrive-instructor-bar"></div>
+      </div>
+      <div class="revenue-breakdown" id="thrive-instructor-breakdown"></div>
+    </div>
+
+    <!-- THRIVE: Impact Momentum -->
+    <div class="card view-thrive">
+      <div class="card-title">Impact Momentum</div>
+      <div class="sparkline-container" id="thrive-sparkline-container"></div>
+      <div class="pace-stats">
+        <div class="pace-row">
+          <span class="pace-row-label">Practitioners joining / wk</span>
+          <span class="pace-row-value" id="thrive-pace-current">--</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-row-label">Needed for cohort</span>
+          <span class="pace-row-value" id="thrive-pace-required">--</span>
+        </div>
+        <div class="pace-row">
+          <span class="pace-row-label">Practitioners to go</span>
+          <span class="pace-row-value" id="thrive-pace-remaining">--</span>
+        </div>
+      </div>
+      <div class="pace-note" id="thrive-pace-note"></div>
     </div>
   </div>
 
@@ -630,6 +780,15 @@
 <script>
 (function () {
   'use strict';
+
+  // ── View Mode ──
+  var params = new URLSearchParams(window.location.search);
+  var isThrive = params.get('view') === 'thrive';
+
+  if (isThrive) {
+    document.body.classList.add('thrive');
+    document.title = 'Georgetown Thrive × Ripple — Impact Partnership';
+  }
 
   // ── Utilities ──
 
@@ -677,7 +836,7 @@
 
   // ── Active Target ──
 
-  var selectedTarget = null; // 'march' or 'june', null = auto
+  var selectedTarget = null;
 
   function getTarget(data, which) {
     if (which === 'march') {
@@ -686,7 +845,6 @@
     if (which === 'june') {
       return { label: 'June Launch', count: data.targets.juneLOIs, date: data.milestones.juneLaunch };
     }
-    // Auto: march if before deadline, else june
     var now = new Date();
     now.setHours(0, 0, 0, 0);
     var marchDate = new Date(data.milestones.marchDeadline + 'T00:00:00');
@@ -728,7 +886,7 @@
     return 'red';
   }
 
-  // ── Render target-dependent sections (ring, pace, label) ──
+  // ── Render target-dependent sections ──
 
   function renderTarget(data, animate) {
     var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
@@ -745,7 +903,6 @@
     var ringProgress = document.getElementById('ring-progress');
     var ringGlow = document.getElementById('ring-glow');
 
-    // Reset to empty without transition
     ringProgress.style.transition = 'none';
     ringGlow.style.transition = 'none';
     ringProgress.style.strokeDasharray = circumference;
@@ -753,10 +910,8 @@
     ringGlow.style.strokeDasharray = circumference;
     ringGlow.style.strokeDashoffset = circumference;
 
-    // Force reflow
     ringProgress.getBoundingClientRect();
 
-    // Animate from 0 up to actual value
     var easing = 'stroke-dashoffset 1.8s cubic-bezier(0.4, 0, 0.15, 1)';
     ringProgress.style.transition = animate ? easing : 'none';
     ringGlow.style.transition = animate ? easing : 'none';
@@ -770,24 +925,44 @@
       document.getElementById('hero-lois').textContent = totalLOIs;
     }
     document.getElementById('hero-target-num').textContent = active.count;
-    document.getElementById('hero-target-label').textContent = 'Letters Of Intent Signed — ' + active.label;
+
+    if (isThrive) {
+      document.getElementById('hero-target-label').textContent = 'Practitioners Joining — ' + active.label;
+      // Children impact
+      var children = totalLOIs * (data.thrive.childrenPerPractitioner || 200);
+      var impactEl = document.getElementById('hero-impact');
+      impactEl.style.display = '';
+      impactEl.textContent = '≈ ' + children.toLocaleString() + ' children supported annually';
+    } else {
+      document.getElementById('hero-target-label').textContent = 'Letters Of Intent Signed — ' + active.label;
+      document.getElementById('hero-impact').style.display = 'none';
+    }
 
     // Hero pace line
     var heroP = document.getElementById('hero-pace');
     heroP.innerHTML =
       '<span class="pace-dot ' + color + '"></span>' +
-      '<span>Signing ' + pace.current + '/wk — need ' + pace.required + '/wk</span>';
+      '<span>' + (isThrive ? 'Joining ' : 'Signing ') + pace.current + '/wk — need ' + pace.required + '/wk</span>';
 
-    // Pace card
-    var pcEl = document.getElementById('pace-current');
-    pcEl.textContent = pace.current + ' LOIs/wk';
-    pcEl.className = 'pace-row-value ' + color;
-
+    // Pace card (business)
+    document.getElementById('pace-current').textContent = pace.current + ' LOIs/wk';
+    document.getElementById('pace-current').className = 'pace-row-value ' + color;
     document.getElementById('pace-required').textContent = pace.required + ' LOIs/wk';
     document.getElementById('pace-remaining').textContent =
       pace.remaining + ' LOIs in ' + pace.weeksLeft + ' wks';
 
-    // Update toggle active state
+    // Pace card (thrive)
+    if (isThrive) {
+      var tpc = document.getElementById('thrive-pace-current');
+      tpc.textContent = pace.current + '/wk';
+      tpc.className = 'pace-row-value ' + color;
+      document.getElementById('thrive-pace-required').textContent = pace.required + '/wk';
+      document.getElementById('thrive-pace-remaining').textContent = pace.remaining;
+      document.getElementById('thrive-pace-note').textContent =
+        'Each practitioner supports ~' + (data.thrive.childrenPerPractitioner || 200) + ' children annually';
+    }
+
+    // Toggle active state
     var btns = document.querySelectorAll('.toggle-btn');
     var activeKey = selectedTarget || (active.label.indexOf('March') >= 0 ? 'march' : 'june');
     btns.forEach(function (btn) {
@@ -802,6 +977,12 @@
   function render(data) {
     loadedData = data;
 
+    // Header brand
+    if (isThrive) {
+      document.getElementById('header-brand').innerHTML =
+        '<span>Georgetown Thrive Center × Ripple</span>';
+    }
+
     // Countdowns
     var marchDays = daysUntil(data.milestones.marchDeadline);
     var juneDays = daysUntil(data.milestones.juneLaunch);
@@ -812,16 +993,23 @@
     document.getElementById('march-days').textContent = Math.abs(marchDays);
     document.getElementById('june-days').textContent = Math.abs(juneDays);
 
+    if (isThrive) {
+      document.getElementById('march-label').textContent =
+        marchDays < 0 ? 'Days Past Spin-off Decision' : 'Days to Spin-off Decision';
+      document.getElementById('june-label').textContent =
+        juneDays < 0 ? 'Days Past Founding Cohort' : 'Days to Founding Cohort';
+    }
+
     if (marchDays < 0) {
       marchEl.classList.add('passed');
-      marchEl.querySelector('.countdown-label').textContent = 'Days Past March Deadline';
+      if (!isThrive) marchEl.querySelector('.countdown-label').textContent = 'Days Past March Deadline';
     } else if (marchDays <= 14) {
       marchEl.classList.add('urgent');
     }
 
     if (juneDays < 0) {
       juneEl.classList.add('passed');
-      juneEl.querySelector('.countdown-label').textContent = 'Days Past June Launch';
+      if (!isThrive) juneEl.querySelector('.countdown-label').textContent = 'Days Past June Launch';
     } else if (juneDays <= 30 && marchDays > 14) {
       juneEl.classList.add('urgent');
     }
@@ -830,9 +1018,31 @@
       marchEl.classList.add('urgent');
     }
 
-    // Target-dependent sections (ring, pace, label)
+    // Target-dependent sections
     renderTarget(data, true);
 
+    if (isThrive) {
+      renderThrive(data);
+    } else {
+      renderBusiness(data);
+    }
+
+    // Footer
+    document.getElementById('footer').textContent =
+      'Last updated: ' + data.lastUpdated;
+
+    // Toggle listener
+    document.getElementById('target-toggle').addEventListener('click', function (e) {
+      var btn = e.target.closest('.toggle-btn');
+      if (!btn || !loadedData) return;
+      selectedTarget = btn.getAttribute('data-target');
+      renderTarget(loadedData, true);
+    });
+  }
+
+  // ── Business-specific rendering ──
+
+  function renderBusiness(data) {
     // Pipeline
     var pipeline = data.actuals.pipeline;
     var maxPipeline = Math.max(pipeline.leads, 1);
@@ -862,20 +1072,46 @@
       data.actuals.lois.b2b + ' B2B (' + formatCurrency(b2bRev) + ')';
 
     // Sparkline
-    renderSparkline(data.actuals.weeklyLOIsHistory);
-
-    // Footer
-    document.getElementById('footer').textContent =
-      'Last updated: ' + data.lastUpdated;
-
-    // Toggle listener
-    document.getElementById('target-toggle').addEventListener('click', function (e) {
-      var btn = e.target.closest('.toggle-btn');
-      if (!btn || !loadedData) return;
-      selectedTarget = btn.getAttribute('data-target');
-      renderTarget(loadedData, true);
-    });
+    renderSparkline('sparkline-container', data.actuals.weeklyLOIsHistory);
   }
+
+  // ── Thrive-specific rendering ──
+
+  function renderThrive(data) {
+    var t = data.thrive;
+
+    // Georgetown Financial Return card
+    document.getElementById('gu-instructor').textContent = formatCurrency(t.instructorBudgetY1);
+    document.getElementById('gu-equity').textContent = t.equityPct + '%';
+    document.getElementById('gu-equity-note').textContent = t.equityPct + '% ownership at spin-off';
+    document.getElementById('gu-revshare').textContent = t.revSharePct + '%';
+    document.getElementById('gu-revshare-note').textContent =
+      t.revSharePct + '% of revenue above ' + formatCurrency(t.revShareThreshold);
+
+    // Instructor Funding card
+    var instructorBudget = t.instructorBudgetY1;
+    var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
+    var active = getActiveTarget(data);
+    var enrollPct = Math.min(totalLOIs / active.count, 1) * 100;
+
+    animateCurrency(document.getElementById('thrive-instructor-total'), instructorBudget, 1400);
+    document.getElementById('thrive-instructor-sub').textContent =
+      'in Georgetown instructor contracts';
+
+    setTimeout(function () {
+      document.getElementById('thrive-instructor-bar').style.width = enrollPct + '%';
+    }, 700);
+
+    var revPctOfInstructor = Math.round((instructorBudget / data.targets.y1Revenue) * 100);
+    document.getElementById('thrive-instructor-breakdown').textContent =
+      revPctOfInstructor + '% of Y1 revenue funds Georgetown instructors · ' +
+      Math.round(enrollPct) + '% enrollment toward cohort';
+
+    // Sparkline
+    renderSparkline('thrive-sparkline-container', data.actuals.weeklyLOIsHistory);
+  }
+
+  // ── Shared helpers ──
 
   function setBar(barId, value, max, numId, display) {
     var pct = Math.round((value / max) * 100);
@@ -883,7 +1119,7 @@
     document.getElementById(numId).textContent = display;
   }
 
-  function renderSparkline(history) {
+  function renderSparkline(containerId, history) {
     var values = history.map(function (w) { return w.count; });
     if (values.length < 2) return;
 
@@ -902,20 +1138,18 @@
 
     var areaPoints = points.join(' ') + ' ' + w + ',' + h + ' 0,' + h;
 
-    document.getElementById('sparkline-container').innerHTML =
+    document.getElementById(containerId).innerHTML =
       '<svg viewBox="0 0 ' + w + ' ' + h + '" class="sparkline" preserveAspectRatio="none">' +
-      '<defs><linearGradient id="sparkGradient" x1="0" y1="0" x2="0" y2="1">' +
+      '<defs><linearGradient id="sparkGradient-' + containerId + '" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0%" stop-color="rgba(74,158,255,0.25)" />' +
       '<stop offset="100%" stop-color="rgba(74,158,255,0)" />' +
       '</linearGradient></defs>' +
-      '<polygon points="' + areaPoints + '" class="area" />' +
+      '<polygon points="' + areaPoints + '" fill="url(#sparkGradient-' + containerId + ')" />' +
       '<polyline points="' + points.join(' ') + '" />' +
       '</svg>';
   }
 
   // ── Configuration ──
-  // To use Google Sheets: publish sheet as CSV, then paste the URL here.
-  // Example: 'https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv'
   var DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQC9zN4sy8wftBf0K30KA5cPU1a3rKLG79ZbPjZuDh11g0tjhwKCGK3imcAHq9DUXklzaxfBSqbqm7-/pub?output=csv';
 
   // ── CSV Parser ──
@@ -928,12 +1162,12 @@
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
-      if (!line) continue;                       // skip blank lines
-      if (line === 'key,value') continue;        // skip header
+      if (!line) continue;
+      if (line === 'key,value') continue;
 
       if (line.toLowerCase().startsWith('weekof')) {
         inWeekly = true;
-        continue;                                // skip "weekOf,count" header
+        continue;
       }
 
       var parts = line.split(',');
@@ -972,6 +1206,13 @@
           inConversation: parseInt(kv.pipeline_inConversation, 10) || 0
         },
         weeklyLOIsHistory: weekly
+      },
+      thrive: {
+        instructorBudgetY1: parseInt(kv.instructorBudgetY1, 10) || 280000,
+        equityPct: parseInt(kv.equityPct, 10) || 10,
+        revSharePct: parseInt(kv.revSharePct, 10) || 10,
+        revShareThreshold: parseInt(kv.revShareThreshold, 10) || 1000000,
+        childrenPerPractitioner: parseInt(kv.childrenPerPractitioner, 10) || 200
       }
     };
   }

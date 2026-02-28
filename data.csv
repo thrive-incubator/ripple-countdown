@@ -12,6 +12,11 @@ lois_b2b,35
 pipeline_leads,340
 pipeline_qualified,180
 pipeline_inConversation,95
+instructorBudgetY1,280000
+equityPct,10
+revSharePct,10
+revShareThreshold,1000000
+childrenPerPractitioner,200
 
 weekOf,count
 2026-02-03,8
