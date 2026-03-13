@@ -177,6 +177,21 @@
       color: var(--accent-red);
     }
 
+    .countdown-block.highlighted {
+      background: rgba(74, 158, 255, 0.08);
+      border: 1px solid rgba(74, 158, 255, 0.3);
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      margin: -0.5rem -1rem;
+      transition: all 0.3s ease;
+    }
+    .countdown-block.highlighted .countdown-number {
+      color: var(--accent-blue);
+    }
+    .countdown-block.highlighted .countdown-label {
+      color: var(--accent-blue);
+    }
+
     .countdown-divider {
       width: 1px;
       height: 60px;
@@ -333,7 +348,7 @@
     /* ── Metrics Grid ── */
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
       flex: 1;
     }
@@ -425,13 +440,13 @@
       color: var(--bar-text);
     }
 
-    .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(74, 158, 255, 0.4), rgba(74, 158, 255, 0.7)); }
-    .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.7)); }
-    .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 230, 118, 0.4), rgba(0, 230, 118, 0.7)); }
+    .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 230, 118, 0.5), rgba(0, 230, 118, 0.8)); }
+    .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(34, 211, 238, 0.5), rgba(34, 211, 238, 0.8)); }
+    .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(138, 100, 255, 0.5), rgba(138, 100, 255, 0.85)); }
 
-    body.thrive .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 51, 102, 0.3), rgba(0, 51, 102, 0.6)); }
+    body.thrive .funnel-row:nth-child(2) .funnel-bar-fill { background: linear-gradient(90deg, rgba(46, 139, 87, 0.3), rgba(46, 139, 87, 0.6)); }
     body.thrive .funnel-row:nth-child(3) .funnel-bar-fill { background: linear-gradient(90deg, rgba(13, 126, 160, 0.3), rgba(13, 126, 160, 0.6)); }
-    body.thrive .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(46, 139, 87, 0.3), rgba(46, 139, 87, 0.6)); }
+    body.thrive .funnel-row:nth-child(4) .funnel-bar-fill { background: linear-gradient(90deg, rgba(0, 51, 102, 0.3), rgba(0, 51, 102, 0.6)); }
 
     /* ── Revenue Card ── */
     .revenue-big {
@@ -499,20 +514,44 @@
     }
 
     /* ── Pace Card ── */
+    .pace-view-toggle {
+      display: inline-flex;
+      background: var(--progress-bg);
+      border-radius: 6px;
+      padding: 2px;
+      margin-left: auto;
+      float: right;
+    }
+    .pace-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pace-toggle-btn.active {
+      background: rgba(74, 158, 255, 0.2);
+      color: var(--accent-blue);
+    }
     .sparkline-container {
       margin-bottom: 1rem;
-      height: 64px;
+      height: 90px;
+      position: relative;
     }
 
     .sparkline {
       width: 100%;
       height: 100%;
+      overflow: visible;
     }
 
     .sparkline polyline {
-      fill: none;
-      stroke: var(--accent-blue);
-      stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -520,6 +559,19 @@
     .sparkline .area {
       fill: url(#sparkGradient);
       stroke: none;
+    }
+
+    .spark-hover-group .hover-dot {
+      pointer-events: all;
+      cursor: default;
+    }
+    .spark-hover-group .hover-label {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      pointer-events: none;
+    }
+    .spark-hover-group:hover .hover-label {
+      opacity: 1;
     }
 
     .pace-stats {
@@ -554,6 +606,228 @@
       font-style: italic;
     }
 
+    /* ── Wide Card (Pipeline + Channels) ── */
+    .card.card-wide {
+      grid-column: 1 / -1;
+    }
+
+    .pipeline-channels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .pipeline-section-title,
+    .channels-section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .pipeline-gap {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-top: 0.8rem;
+    }
+
+    /* ── Channel Items ── */
+    .channel-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .channel-item:last-child { margin-bottom: 0; }
+
+    .channel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .channel-dot.green  { background: var(--accent-green); }
+    .channel-dot.blue   { background: var(--accent-blue); }
+    .channel-dot.amber  { background: var(--accent-amber); }
+    .channel-dot.navy   { background: var(--text-muted); }
+
+    .channel-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .channel-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.15rem;
+    }
+
+    .channel-desc {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .channel-badge {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .channel-badge.badge-green  { background: var(--accent-green); color: #fff; }
+    .channel-badge.badge-blue   { background: var(--accent-blue); color: #fff; }
+    .channel-badge.badge-amber  { background: var(--accent-amber); color: #fff; }
+    .channel-badge.badge-navy   { background: var(--text-muted); color: var(--text-primary); }
+
+    body.thrive .channel-badge.badge-green { background: var(--accent-green); }
+    body.thrive .channel-badge.badge-blue  { background: var(--accent-blue); }
+    body.thrive .channel-badge.badge-amber { background: var(--accent-amber); }
+
+    /* ── Hero View Toggle (Ring / Timeline) ── */
+    .hero-view-toggle {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 1rem;
+    }
+
+    body.thrive .hero-view-toggle {
+      background: rgba(0, 51, 102, 0.04);
+    }
+
+    .view-toggle-btn {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      padding: 0.3rem 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .view-toggle-btn:hover { color: var(--text-primary); }
+
+    .view-toggle-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    body.thrive .view-toggle-btn.active {
+      background: rgba(0, 51, 102, 0.10);
+    }
+
+    /* ── Timeline View ── */
+    #hero-timeline-view {
+      width: 100%;
+      max-width: 1100px;
+    }
+    .timeline-container {
+      width: 100%;
+      padding: 2.5rem 2rem;
+    }
+
+    .timeline-bar-wrapper {
+      position: relative;
+      height: 36px;
+      background: var(--progress-bg);
+      border-radius: 18px;
+      margin: 3rem 0 3.5rem;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 18px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.15, 1);
+    }
+
+    .timeline-today-marker {
+      position: absolute;
+      top: -12px;
+      width: 4px;
+      height: 60px;
+      background: var(--accent-red);
+      transform: translateX(-1px);
+      z-index: 2;
+    }
+
+    .timeline-today-label {
+      position: absolute;
+      top: -28px;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-red);
+      white-space: nowrap;
+    }
+
+    .timeline-milestone-tick {
+      position: absolute;
+      top: -8px;
+      width: 3px;
+      height: 52px;
+      background: var(--border-card);
+      transform: translateX(-1px);
+    }
+
+    .timeline-milestone-label {
+      position: absolute;
+      top: 30px;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .timeline-milestone-label strong {
+      display: block;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .timeline-loi-label {
+      position: absolute;
+      top: -30px;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      white-space: nowrap;
+    }
+
+    .timeline-status {
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-top: 3rem;
+    }
+
     /* ── Footer ── */
     .footer {
       text-align: center;
@@ -585,6 +859,7 @@
 
     @media (max-width: 768px) {
       .metrics-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+      .pipeline-channels-grid { grid-template-columns: 1fr; }
       .countdown-row { gap: 1.5rem; }
       .countdown-number { font-size: 2.8rem; }
       .countdown-divider { width: 40px; height: 1px; background: linear-gradient(to right, transparent, var(--border-card), transparent); }
@@ -615,21 +890,18 @@
   <!-- Header -->
   <header class="header">
     <div class="header-brand" id="header-brand"><span>Ripple Institute</span></div>
-    <div class="countdown-row">
-      <div class="countdown-block" id="countdown-march">
-        <div class="countdown-number" id="march-days">--</div>
-        <div class="countdown-label" id="march-label">Days to March Deadline</div>
-      </div>
-      <div class="countdown-divider"></div>
-      <div class="countdown-block" id="countdown-june">
-        <div class="countdown-number" id="june-days">--</div>
-        <div class="countdown-label" id="june-label">Days to June Launch</div>
-      </div>
+    <div class="countdown-row" id="countdown-row">
+      <!-- Populated dynamically from milestones -->
     </div>
   </header>
 
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-view-toggle" id="hero-view-toggle">
+      <button class="view-toggle-btn active" data-view="ring">Ring</button>
+      <button class="view-toggle-btn" data-view="timeline">Timeline</button>
+    </div>
+    <div id="hero-ring-view">
     <div class="hero-ring-container">
       <svg viewBox="0 0 280 280" class="hero-ring">
         <defs>
@@ -650,8 +922,13 @@
       </div>
     </div>
     <div class="target-toggle" id="target-toggle">
-      <button class="toggle-btn active" data-target="march">March · 100</button>
-      <button class="toggle-btn" data-target="june">June · 250</button>
+      <!-- Populated dynamically from milestones -->
+    </div>
+    </div><!-- end hero-ring-view -->
+    <div id="hero-timeline-view" style="display:none;">
+      <div class="timeline-container" id="timeline-container">
+        <!-- Populated dynamically -->
+      </div>
     </div>
     <div class="hero-label" id="hero-target-label">LOIs Signed</div>
     <div class="hero-pace" id="hero-pace"></div>
@@ -660,29 +937,6 @@
 
   <!-- Metrics Grid -->
   <div class="metrics-grid">
-    <!-- BUSINESS: Pipeline Card -->
-    <div class="card view-business">
-      <div class="card-title">Pipeline <span class="card-badge">Coming Soon</span></div>
-      <div class="funnel-row">
-        <div class="funnel-label">Leads</div>
-        <div class="funnel-bar-track">
-          <div class="funnel-bar-fill" id="bar-leads"><span id="num-leads">0</span></div>
-        </div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-label">Qualified</div>
-        <div class="funnel-bar-track">
-          <div class="funnel-bar-fill" id="bar-qualified"><span id="num-qualified">0</span></div>
-        </div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-label">In Conversation</div>
-        <div class="funnel-bar-track">
-          <div class="funnel-bar-fill" id="bar-inconvo"><span id="num-inconvo">0</span></div>
-        </div>
-      </div>
-    </div>
-
     <!-- BUSINESS: Revenue Card -->
     <div class="card view-business">
       <div class="card-title">Revenue Committed</div>
@@ -696,7 +950,13 @@
 
     <!-- BUSINESS: Pace Card -->
     <div class="card view-business">
-      <div class="card-title">Weekly Pace</div>
+      <div class="card-title">
+        <span id="pace-title-text">Weekly Pace</span>
+        <div class="pace-view-toggle" id="pace-view-toggle">
+          <button class="pace-toggle-btn active" data-pace="weekly">Weekly</button>
+          <button class="pace-toggle-btn" data-pace="cumulative">Cumulative</button>
+        </div>
+      </div>
       <div class="sparkline-container" id="sparkline-container"></div>
       <div class="pace-stats">
         <div class="pace-row">
@@ -710,6 +970,41 @@
         <div class="pace-row">
           <span class="pace-row-label">Remaining</span>
           <span class="pace-row-value" id="pace-remaining">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUSINESS: Pipeline + Active Channels Card -->
+    <div class="card card-wide view-business">
+      <div class="card-title">Pipeline + Active Channels</div>
+      <div class="pipeline-channels-grid">
+        <div class="pipeline-side">
+          <div class="pipeline-section-title">Pipeline Status</div>
+          <div class="funnel-row">
+            <div class="funnel-label">Confirmed</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" id="bar-confirmed"><span id="num-confirmed">0</span></div>
+            </div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Line of Sight</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" id="bar-los"><span id="num-los">0</span></div>
+            </div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-label">Database</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" id="bar-database"><span id="num-database">0</span></div>
+            </div>
+          </div>
+          <div class="pipeline-gap" id="pipeline-gap"></div>
+        </div>
+        <div class="channels-side">
+          <div class="channels-section-title">Active Channels</div>
+          <div id="channels-list">
+            <!-- Populated dynamically -->
+          </div>
         </div>
       </div>
     </div>
@@ -836,25 +1131,24 @@
 
   // ── Active Target ──
 
-  var selectedTarget = null;
-
-  function getTarget(data, which) {
-    if (which === 'march') {
-      return { label: 'March Target', count: data.targets.marchLOIs, date: data.milestones.marchDeadline };
-    }
-    if (which === 'june') {
-      return { label: 'June Launch', count: data.targets.juneLOIs, date: data.milestones.juneLaunch };
-    }
-    var now = new Date();
-    now.setHours(0, 0, 0, 0);
-    var marchDate = new Date(data.milestones.marchDeadline + 'T00:00:00');
-    return now <= marchDate
-      ? getTarget(data, 'march')
-      : getTarget(data, 'june');
-  }
+  var selectedTargetIdx = null;
 
   function getActiveTarget(data) {
-    return getTarget(data, selectedTarget);
+    var ms = data.milestones;
+    if (selectedTargetIdx !== null && selectedTargetIdx < ms.length) {
+      var m = ms[selectedTargetIdx];
+      return { label: m.label, count: m.lois, date: m.date, idx: selectedTargetIdx };
+    }
+    // Auto-select next upcoming milestone
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    for (var i = 0; i < ms.length; i++) {
+      var mDate = new Date(ms[i].date + 'T00:00:00');
+      if (now <= mDate) return { label: ms[i].label, count: ms[i].lois, date: ms[i].date, idx: i };
+    }
+    // All passed — use last
+    var last = ms[ms.length - 1];
+    return { label: last.label, count: last.lois, date: last.date, idx: ms.length - 1 };
   }
 
   // ── Pace ──
@@ -964,10 +1258,20 @@
 
     // Toggle active state
     var btns = document.querySelectorAll('.toggle-btn');
-    var activeKey = selectedTarget || (active.label.indexOf('March') >= 0 ? 'march' : 'june');
+    var activeIdx = String(active.idx);
     btns.forEach(function (btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-target') === activeKey);
+      btn.classList.toggle('active', btn.getAttribute('data-target') === activeIdx);
     });
+
+    // Highlight corresponding countdown block in header
+    var isRingView = document.getElementById('hero-ring-view').style.display !== 'none';
+    document.querySelectorAll('.countdown-block').forEach(function (block) {
+      block.classList.toggle('highlighted',
+        isRingView && block.getAttribute('data-milestone') === activeIdx);
+    });
+
+    // Timeline view
+    renderTimeline(data);
   }
 
   // ── Render (full, called once on load) ──
@@ -983,40 +1287,31 @@
         '<span>Georgetown Thrive Center × Ripple</span>';
     }
 
-    // Countdowns
-    var marchDays = daysUntil(data.milestones.marchDeadline);
-    var juneDays = daysUntil(data.milestones.juneLaunch);
+    // Countdowns — dynamic from milestones array
+    var countdownRow = document.getElementById('countdown-row');
+    var countdownHTML = '';
+    data.milestones.forEach(function (ms, i) {
+      var days = daysUntil(ms.date);
+      var cls = '';
+      if (days < 0) cls = 'passed';
+      else if (days <= 14) cls = 'urgent';
 
-    var marchEl = document.getElementById('countdown-march');
-    var juneEl = document.getElementById('countdown-june');
+      if (i > 0) countdownHTML += '<div class="countdown-divider"></div>';
+      countdownHTML +=
+        '<div class="countdown-block ' + cls + '" data-milestone="' + i + '">' +
+        '<div class="countdown-number">' + Math.abs(days) + '</div>' +
+        '<div class="countdown-label">' +
+        (days < 0 ? 'Days Past ' : 'Days to ') + ms.label +
+        '</div></div>';
+    });
+    countdownRow.innerHTML = countdownHTML;
 
-    document.getElementById('march-days').textContent = Math.abs(marchDays);
-    document.getElementById('june-days').textContent = Math.abs(juneDays);
-
-    if (isThrive) {
-      document.getElementById('march-label').textContent =
-        marchDays < 0 ? 'Days Past Spin-off Decision' : 'Days to Spin-off Decision';
-      document.getElementById('june-label').textContent =
-        juneDays < 0 ? 'Days Past Founding Cohort' : 'Days to Founding Cohort';
-    }
-
-    if (marchDays < 0) {
-      marchEl.classList.add('passed');
-      if (!isThrive) marchEl.querySelector('.countdown-label').textContent = 'Days Past March Deadline';
-    } else if (marchDays <= 14) {
-      marchEl.classList.add('urgent');
-    }
-
-    if (juneDays < 0) {
-      juneEl.classList.add('passed');
-      if (!isThrive) juneEl.querySelector('.countdown-label').textContent = 'Days Past June Launch';
-    } else if (juneDays <= 30 && marchDays > 14) {
-      juneEl.classList.add('urgent');
-    }
-
-    if (marchDays > 0 && juneDays > 0 && marchDays <= juneDays && marchDays <= 30) {
-      marchEl.classList.add('urgent');
-    }
+    // Target toggle buttons — dynamic from milestones
+    var toggleHTML = '';
+    data.milestones.forEach(function (ms, i) {
+      toggleHTML += '<button class="toggle-btn" data-target="' + i + '">' + ms.label + '</button>';
+    });
+    document.getElementById('target-toggle').innerHTML = toggleHTML;
 
     // Target-dependent sections
     renderTarget(data, true);
@@ -1031,27 +1326,159 @@
     document.getElementById('footer').textContent =
       'Last updated: ' + data.lastUpdated;
 
-    // Toggle listener
+    // Milestone toggle listener
     document.getElementById('target-toggle').addEventListener('click', function (e) {
       var btn = e.target.closest('.toggle-btn');
       if (!btn || !loadedData) return;
-      selectedTarget = btn.getAttribute('data-target');
+      selectedTargetIdx = parseInt(btn.getAttribute('data-target'), 10);
       renderTarget(loadedData, true);
+    });
+
+    // Hero view toggle (Ring / Timeline)
+    document.getElementById('hero-view-toggle').addEventListener('click', function (e) {
+      var btn = e.target.closest('.view-toggle-btn');
+      if (!btn) return;
+      var view = btn.getAttribute('data-view');
+      document.querySelectorAll('.view-toggle-btn').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      document.getElementById('hero-ring-view').style.display = view === 'ring' ? '' : 'none';
+      document.getElementById('hero-timeline-view').style.display = view === 'timeline' ? '' : 'none';
+      if (view === 'timeline' && loadedData) renderTimeline(loadedData);
+      // Update countdown highlight based on view
+      var isRing = view === 'ring';
+      var activeIdx = loadedData ? String(getActiveTarget(loadedData).idx) : '';
+      document.querySelectorAll('.countdown-block').forEach(function (block) {
+        block.classList.toggle('highlighted',
+          isRing && block.getAttribute('data-milestone') === activeIdx);
+      });
+    });
+
+    // Pace view toggle (Weekly / Cumulative)
+    document.getElementById('pace-view-toggle').addEventListener('click', function (e) {
+      var btn = e.target.closest('.pace-toggle-btn');
+      if (!btn) return;
+      var mode = btn.getAttribute('data-pace');
+      document.querySelectorAll('#pace-view-toggle .pace-toggle-btn').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      if (loadedData) {
+        var history = loadedData.actuals.weeklyLOIsHistory;
+        if (mode === 'cumulative') {
+          renderCumulativeSparkline('sparkline-container', history);
+          document.getElementById('pace-title-text').textContent = 'Cumulative LOIs';
+        } else {
+          renderSparkline('sparkline-container', history);
+          document.getElementById('pace-title-text').textContent = 'Weekly Pace';
+        }
+      }
     });
   }
 
   // ── Business-specific rendering ──
 
+  // ── Timeline rendering ──
+
+  function renderTimeline(data) {
+    var container = document.getElementById('timeline-container');
+    if (!container || !data.milestones.length) return;
+
+    var ms = data.milestones;
+    var totalLOIs = data.actuals.lois.b2c + data.actuals.lois.b2b;
+    var finalTarget = ms[ms.length - 1].lois;
+    var loiPct = Math.min((totalLOIs / finalTarget) * 100, 100);
+
+    // Time range: from project start (Feb 8) to last milestone
+    var startDate = new Date('2026-02-08T00:00:00');
+    var endDate = new Date(ms[ms.length - 1].date + 'T00:00:00');
+    var totalSpan = endDate - startDate;
+
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    var todayPct = Math.max(0, Math.min(((now - startDate) / totalSpan) * 100, 100));
+
+    // Build milestone markers
+    var markersHTML = '';
+    ms.forEach(function (m) {
+      var mDate = new Date(m.date + 'T00:00:00');
+      var pct = ((mDate - startDate) / totalSpan) * 100;
+      markersHTML +=
+        '<div class="timeline-milestone-tick" style="left:' + pct + '%"></div>' +
+        '<div class="timeline-milestone-label" style="left:' + pct + '%">' +
+        '<strong>' + m.lois + '</strong>' + m.label.split('·')[0].trim() +
+        '</div>';
+    });
+
+    // Determine status color
+    var expectedLOIs = 0;
+    for (var i = 0; i < ms.length; i++) {
+      var mDate = new Date(ms[i].date + 'T00:00:00');
+      if (now <= mDate) {
+        // Interpolate expected LOIs at today
+        var prevLois = i > 0 ? ms[i - 1].lois : 0;
+        var prevDate = i > 0 ? new Date(ms[i - 1].date + 'T00:00:00') : startDate;
+        var segSpan = mDate - prevDate;
+        var elapsed = now - prevDate;
+        expectedLOIs = prevLois + (ms[i].lois - prevLois) * (elapsed / segSpan);
+        break;
+      }
+      expectedLOIs = ms[i].lois;
+    }
+    var ratio = expectedLOIs > 0 ? totalLOIs / expectedLOIs : 1;
+    var statusColor = ratio >= 1 ? 'green' : ratio >= 0.8 ? 'amber' : 'red';
+    var statusText = ratio >= 1 ? 'On track' : ratio >= 0.8 ? 'Slightly behind' : 'Behind pace';
+
+    container.innerHTML =
+      '<div class="timeline-bar-wrapper">' +
+      '<div class="timeline-progress" style="width:' + loiPct + '%"></div>' +
+      '<div class="timeline-loi-label" style="left:' + loiPct + '%">' + totalLOIs + ' LOIs</div>' +
+      '<div class="timeline-today-marker" style="left:' + todayPct + '%">' +
+      '<div class="timeline-today-label">Today</div></div>' +
+      markersHTML +
+      '</div>' +
+      '<div class="timeline-status" style="color:var(--accent-' + statusColor + ')">' +
+      '<span class="pace-dot ' + statusColor + '"></span> ' + statusText +
+      ' — ' + totalLOIs + ' of ' + finalTarget + ' LOIs (' + Math.round(loiPct) + '%)' +
+      '</div>';
+  }
+
   function renderBusiness(data) {
-    // Pipeline
+    // Pipeline — each bar has its own scale
     var pipeline = data.actuals.pipeline;
-    var maxPipeline = Math.max(pipeline.leads, 1);
 
     setTimeout(function () {
-      setBar('bar-leads', pipeline.leads, maxPipeline, 'num-leads', 'N/A');
-      setBar('bar-qualified', pipeline.qualified, maxPipeline, 'num-qualified', 'N/A');
-      setBar('bar-inconvo', pipeline.inConversation, maxPipeline, 'num-inconvo', 'N/A');
+      setBar('bar-confirmed', pipeline.confirmedRegistrations, 250, 'num-confirmed', pipeline.confirmedRegistrations.toLocaleString());
+      setBar('bar-los', pipeline.lineOfSight, 100, 'num-los', pipeline.lineOfSight.toLocaleString());
+      setBar('bar-database', pipeline.databaseContacts, 5000, 'num-database', pipeline.databaseContacts.toLocaleString());
     }, 600);
+
+    // Pipeline gap
+    var gap = pipeline.target - pipeline.confirmedRegistrations;
+    document.getElementById('pipeline-gap').textContent =
+      gap > 0 ? 'Gap to target: ' + gap + ' seats' : 'Target reached!';
+
+    // Active Channels
+    var channelsList = document.getElementById('channels-list');
+    var channelsHTML = '';
+    data.actuals.channels.forEach(function (ch) {
+      var badgeClass = 'badge-navy';
+      var dotClass = 'navy';
+      var status = (ch.status || '').toUpperCase();
+      if (status === 'LIVE') { badgeClass = 'badge-green'; dotClass = 'green'; }
+      else if (status === 'ACTIVE') { badgeClass = 'badge-blue'; dotClass = 'blue'; }
+      else if (/\d/.test(status)) { badgeClass = 'badge-amber'; dotClass = 'amber'; }
+
+      channelsHTML +=
+        '<div class="channel-item">' +
+        '<div class="channel-dot ' + dotClass + '"></div>' +
+        '<div class="channel-text">' +
+        '<div class="channel-name">' + ch.name + '</div>' +
+        '<div class="channel-desc">' + ch.desc + '</div>' +
+        '</div>' +
+        '<div class="channel-badge ' + badgeClass + '">' + ch.status + '</div>' +
+        '</div>';
+    });
+    channelsList.innerHTML = channelsHTML;
 
     // Revenue
     var b2cRev = data.actuals.lois.b2c * data.pricing.b2c;
@@ -1121,31 +1548,78 @@
 
   function renderSparkline(containerId, history) {
     var values = history.map(function (w) { return w.count; });
+    var labels = history.map(function (w) { return w.weekOf; });
     if (values.length < 2) return;
+    _renderSparkSVG(containerId, values, labels, 'sparkGradient-' + containerId, '74,158,255');
+  }
 
+  function renderCumulativeSparkline(containerId, history) {
+    var weekly = history.map(function (w) { return w.count; });
+    var labels = history.map(function (w) { return w.weekOf; });
+    var cumulative = [];
+    var sum = 0;
+    for (var i = 0; i < weekly.length; i++) {
+      sum += weekly[i];
+      cumulative.push(sum);
+    }
+    _renderSparkSVG(containerId, cumulative, labels, 'sparkGradient-' + containerId + '-cum', '0,230,118');
+  }
+
+  function _renderSparkSVG(containerId, values, labels, gradientId, rgb) {
     var max = Math.max.apply(null, values);
     var min = Math.min.apply(null, values);
     var range = max - min || 1;
-    var w = 200, h = 60;
-    var padY = 4;
+    var w = 200, h = 80;
+    var padY = 12;
     var step = w / (values.length - 1);
 
-    var points = values.map(function (v, i) {
+    var coords = values.map(function (v, i) {
       var x = i * step;
       var y = padY + (1 - (v - min) / range) * (h - 2 * padY);
-      return x + ',' + y;
+      return { x: x, y: y, val: v, label: labels[i] || '' };
     });
 
+    var points = coords.map(function (c) { return c.x + ',' + c.y; });
     var areaPoints = points.join(' ') + ' ' + w + ',' + h + ' 0,' + h;
+
+    // Invisible wider hover targets + visible dots + text labels (grouped so hover works)
+    var hoverSVG = '';
+    coords.forEach(function (c, i) {
+      var labelY = c.y > 20 ? c.y - 8 : c.y + 14;
+      // Clamp label X so it doesn't overflow left/right edges
+      var anchor = 'middle';
+      var rectX = c.x - 14;
+      var textX = c.x;
+      if (c.x < 16) {
+        anchor = 'start';
+        rectX = 0;
+        textX = 14;
+      } else if (c.x > w - 16) {
+        anchor = 'end';
+        rectX = w - 28;
+        textX = w - 14;
+      }
+      hoverSVG +=
+        '<g class="spark-hover-group">' +
+        '<circle cx="' + c.x + '" cy="' + c.y + '" r="10" fill="transparent" class="hover-dot" />' +
+        '<circle cx="' + c.x + '" cy="' + c.y + '" r="3.5" fill="rgba(' + rgb + ',1)" class="hover-label" />' +
+        '<rect x="' + rectX + '" y="' + (labelY - 9) + '" width="28" height="13" rx="3" ' +
+        'fill="rgba(0,0,0,0.75)" class="hover-label" />' +
+        '<text x="' + textX + '" y="' + (labelY) + '" ' +
+        'fill="rgba(' + rgb + ',1)" font-size="8" text-anchor="' + anchor + '" font-weight="600" class="hover-label">' +
+        c.val + '</text>' +
+        '</g>';
+    });
 
     document.getElementById(containerId).innerHTML =
       '<svg viewBox="0 0 ' + w + ' ' + h + '" class="sparkline" preserveAspectRatio="none">' +
-      '<defs><linearGradient id="sparkGradient-' + containerId + '" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="rgba(74,158,255,0.25)" />' +
-      '<stop offset="100%" stop-color="rgba(74,158,255,0)" />' +
+      '<defs><linearGradient id="' + gradientId + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="rgba(' + rgb + ',0.25)" />' +
+      '<stop offset="100%" stop-color="rgba(' + rgb + ',0)" />' +
       '</linearGradient></defs>' +
-      '<polygon points="' + areaPoints + '" fill="url(#sparkGradient-' + containerId + ')" />' +
-      '<polyline points="' + points.join(' ') + '" />' +
+      '<polygon points="' + areaPoints + '" fill="url(#' + gradientId + ')" />' +
+      '<polyline points="' + points.join(' ') + '" fill="none" stroke="rgba(' + rgb + ',1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />' +
+      hoverSVG +
       '</svg>';
   }
 
@@ -1180,15 +1654,44 @@
       }
     }
 
+    // Parse milestones (up to 5)
+    var milestones = [];
+    for (var m = 1; m <= 5; m++) {
+      var mDate = kv['milestone_' + m + '_date'];
+      var mLois = kv['milestone_' + m + '_lois'];
+      var mLabel = kv['milestone_' + m + '_label'];
+      if (mDate && mLois) {
+        milestones.push({
+          date: mDate,
+          lois: parseInt(mLois, 10) || 0,
+          label: mLabel || ('Milestone ' + m)
+        });
+      }
+    }
+
+    // Fallback to old format if no milestones found
+    if (milestones.length === 0) {
+      if (kv.marchDeadline) milestones.push({ date: kv.marchDeadline, lois: parseInt(kv.marchLOIs, 10) || 100, label: 'March · 100' });
+      if (kv.juneLaunch) milestones.push({ date: kv.juneLaunch, lois: parseInt(kv.juneLOIs, 10) || 250, label: 'June · 250' });
+    }
+
+    // Parse channels (up to 8)
+    var channels = [];
+    for (var c = 1; c <= 8; c++) {
+      var cName = kv['channel_' + c + '_name'];
+      if (cName) {
+        channels.push({
+          name: cName,
+          desc: kv['channel_' + c + '_desc'] || '',
+          status: kv['channel_' + c + '_status'] || ''
+        });
+      }
+    }
+
     return {
       lastUpdated: kv.lastUpdated || '',
-      milestones: {
-        marchDeadline: kv.marchDeadline || '',
-        juneLaunch: kv.juneLaunch || ''
-      },
+      milestones: milestones,
       targets: {
-        marchLOIs: parseInt(kv.marchLOIs, 10) || 0,
-        juneLOIs: parseInt(kv.juneLOIs, 10) || 0,
         y1Revenue: parseInt(kv.y1Revenue, 10) || 0
       },
       pricing: {
@@ -1201,10 +1704,13 @@
           b2b: parseInt(kv.lois_b2b, 10) || 0
         },
         pipeline: {
-          leads: parseInt(kv.pipeline_leads, 10) || 0,
-          qualified: parseInt(kv.pipeline_qualified, 10) || 0,
-          inConversation: parseInt(kv.pipeline_inConversation, 10) || 0
+          confirmedRegistrations: parseInt(kv.pipeline_confirmedRegistrations, 10) || 0,
+          lineOfSight: parseInt(kv.pipeline_lineOfSight, 10) || 0,
+          databaseContacts: parseInt(kv.pipeline_databaseContacts, 10) || 0,
+          target: parseInt(kv.pipeline_target, 10) || 0,
+          targetDate: kv.pipeline_targetDate || ''
         },
+        channels: channels,
         weeklyLOIsHistory: weekly
       },
       thrive: {
